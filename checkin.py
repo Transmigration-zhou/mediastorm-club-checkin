@@ -6,6 +6,8 @@ import sys
 import time
 
 import requests
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 CHECKIN_URL = "https://h5.youzan.com/wscump/checkin/checkinV2.json"
 APP_ID = "wx92782ef90ebc836d"
@@ -18,6 +20,11 @@ USER_AGENT = (
     "MiniProgramEnv/Mac MacWechat/WMPF MacWechat/3.8.7(0x13080712) "
     "UnifiedPCMacWechat(0xf2641702) XWEB/18788"
 )
+
+# Configure session with retry logic for transient errors
+_session = requests.Session()
+_retry = Retry(total=3, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
+_session.mount("https://", HTTPAdapter(max_retries=_retry))
 
 
 def build_extra_data(sid: str) -> str:
@@ -54,7 +61,7 @@ def do_checkin(access_token: str, sid: str) -> None:
         "kdt_id": KDT_ID,
         "access_token": access_token,
     }
-    resp = requests.get(CHECKIN_URL, params=params, headers=build_headers(sid), timeout=30)
+    resp = _session.get(CHECKIN_URL, params=params, headers=build_headers(sid), timeout=30)
     resp.raise_for_status()
     body = resp.json()
     if body.get("code") != 0 or not body.get("data", {}).get("success"):

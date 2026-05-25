@@ -45,7 +45,7 @@ def test_do_checkin_success(capsys):
             "list": [{"infos": {"title": "10积分"}}],
         },
     }
-    with patch("checkin.requests.get", return_value=mock_resp):
+    with patch("checkin._session.get", return_value=mock_resp):
         checkin.do_checkin("token123", "sid123")
         mock_resp.raise_for_status.assert_called_once()
     captured = capsys.readouterr()
@@ -55,7 +55,7 @@ def test_do_checkin_success(capsys):
 def test_do_checkin_nonzero_code_exits(capsys):
     mock_resp = MagicMock()
     mock_resp.json.return_value = {"code": 1, "msg": "token失效"}
-    with patch("checkin.requests.get", return_value=mock_resp):
+    with patch("checkin._session.get", return_value=mock_resp):
         with pytest.raises(SystemExit) as exc_info:
             checkin.do_checkin("bad_token", "sid")
     assert exc_info.value.code == 1
@@ -66,7 +66,7 @@ def test_do_checkin_nonzero_code_exits(capsys):
 def test_do_checkin_success_false_exits():
     mock_resp = MagicMock()
     mock_resp.json.return_value = {"code": 0, "data": {"success": False}}
-    with patch("checkin.requests.get", return_value=mock_resp):
+    with patch("checkin._session.get", return_value=mock_resp):
         with pytest.raises(SystemExit) as exc_info:
             checkin.do_checkin("token", "sid")
     assert exc_info.value.code == 1
