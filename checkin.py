@@ -1,4 +1,5 @@
 import json
+import os
 import random
 import string
 import sys
@@ -61,3 +62,16 @@ def do_checkin(access_token: str, sid: str) -> None:
         sys.exit(1)
     for award in body["data"].get("list", []):
         print(f"签到成功！获得: {award.get('infos', {}).get('title', '奖励')}")
+
+
+def main() -> None:
+    access_token = os.environ.get("ACCESS_TOKEN")
+    sid = os.environ.get("SESSION_ID")
+    if not access_token or not sid:
+        print("错误: 缺少 ACCESS_TOKEN 或 SESSION_ID 环境变量")
+        sys.exit(1)
+    do_checkin(access_token, sid)
+
+
+if __name__ == "__main__":
+    main()

@@ -70,3 +70,27 @@ def test_do_checkin_success_false_exits():
         with pytest.raises(SystemExit) as exc_info:
             checkin.do_checkin("token", "sid")
     assert exc_info.value.code == 1
+
+
+def test_main_missing_access_token_exits(monkeypatch):
+    monkeypatch.delenv("ACCESS_TOKEN", raising=False)
+    monkeypatch.setenv("SESSION_ID", "sid")
+    with pytest.raises(SystemExit) as exc_info:
+        checkin.main()
+    assert exc_info.value.code == 1
+
+
+def test_main_missing_session_id_exits(monkeypatch):
+    monkeypatch.setenv("ACCESS_TOKEN", "tok")
+    monkeypatch.delenv("SESSION_ID", raising=False)
+    with pytest.raises(SystemExit) as exc_info:
+        checkin.main()
+    assert exc_info.value.code == 1
+
+
+def test_main_calls_do_checkin(monkeypatch):
+    monkeypatch.setenv("ACCESS_TOKEN", "tok")
+    monkeypatch.setenv("SESSION_ID", "sid")
+    with patch("checkin.do_checkin") as mock_checkin:
+        checkin.main()
+    mock_checkin.assert_called_once_with("tok", "sid")
