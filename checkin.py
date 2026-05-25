@@ -1,6 +1,7 @@
 import json
 import random
 import string
+import sys
 import time
 
 import requests
@@ -43,3 +44,20 @@ def build_headers(sid: str) -> dict:
         "Referer": "https://servicewechat.com/wx92782ef90ebc836d/17/page-frame.html",
         "Extra-Data": build_extra_data(sid),
     }
+
+
+def do_checkin(access_token: str, sid: str) -> None:
+    params = {
+        "checkinId": CHECKIN_ID,
+        "app_id": APP_ID,
+        "kdt_id": KDT_ID,
+        "access_token": access_token,
+    }
+    resp = requests.get(CHECKIN_URL, params=params, headers=build_headers(sid), timeout=30)
+    resp.raise_for_status()
+    body = resp.json()
+    if body.get("code") != 0 or not body.get("data", {}).get("success"):
+        print(f"签到失败: {body}")
+        sys.exit(1)
+    for award in body["data"].get("list", []):
+        print(f"签到成功！获得: {award.get('infos', {}).get('title', '奖励')}")
