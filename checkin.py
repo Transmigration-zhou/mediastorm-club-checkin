@@ -71,12 +71,15 @@ def do_checkin(access_token: str, sid: str) -> None:
     if body.get("code") != 0 or not data.get("success"):
         print(f"签到失败: {body}")
         sys.exit(1)
-    for award in data.get("list", []):
+    awards = data.get("list", [])
+    if not awards:
+        print("签到成功！")
+    for award in awards:
         print(f"签到成功！获得: {award.get('infos', {}).get('title', '奖励')}")
 
 
-def _load_env(env_file: str | None = None) -> None:
-    if env_file is None:
+def _load_env(env_file: str = "") -> None:
+    if not env_file:
         env_file = os.path.join(os.path.dirname(str(__file__)), ".env")
     if not os.path.exists(env_file):
         return
