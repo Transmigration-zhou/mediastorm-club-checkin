@@ -20,14 +20,11 @@
 | `ACCESS_TOKEN` | 步骤 1 中获取的 access_token |
 | `SESSION_ID` | 步骤 1 中获取的 sid |
 
-### 3. 推送到 GitHub
+### 3. Fork 本仓库
 
-```bash
-git remote add origin <你的仓库地址>
-git push -u origin master
-```
+点击右上角 **Fork**，将仓库复制到自己的 GitHub 账号下。
 
-推送后 Actions 自动启用，每天北京时间 09:00 执行签到。也可在 **Actions → Daily Check-in → Run workflow** 手动触发。
+Fork 后 Actions 自动启用，每天北京时间 09:00 执行签到。也可在 **Actions → Daily Check-in → Run workflow** 手动触发。
 
 ## 凭证过期
 
