@@ -1,4 +1,5 @@
 import json
+import os
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -79,6 +80,23 @@ def test_do_checkin_already_checked_in(capsys):
         checkin.do_checkin("token", "sid")
     captured = capsys.readouterr()
     assert "今日已签到" in captured.out
+
+
+def test_do_checkin_null_data_exits():
+    mock_resp = MagicMock()
+    mock_resp.json.return_value = {"code": 0, "data": None}
+    with patch("checkin._session.get", return_value=mock_resp):
+        with pytest.raises(SystemExit) as exc_info:
+            checkin.do_checkin("token", "sid")
+    assert exc_info.value.code == 1
+
+
+def test_load_env_strips_inline_comments(tmp_path, monkeypatch):
+    env_file = tmp_path / ".env"
+    env_file.write_text("TEST_INLINE_TOKEN=abc123 # expires monthly\n")
+    monkeypatch.delenv("TEST_INLINE_TOKEN", raising=False)
+    checkin._load_env(str(env_file))
+    assert os.environ.get("TEST_INLINE_TOKEN") == "abc123"
 
 
 def test_main_missing_access_token_exits(monkeypatch):

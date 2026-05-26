@@ -67,15 +67,17 @@ def do_checkin(access_token: str, sid: str) -> None:
     if body.get("code") == 1000030071:
         print("今日已签到，跳过")
         return
-    if body.get("code") != 0 or not body.get("data", {}).get("success"):
+    data = body.get("data") or {}
+    if body.get("code") != 0 or not data.get("success"):
         print(f"签到失败: {body}")
         sys.exit(1)
-    for award in body["data"].get("list", []):
+    for award in data.get("list", []):
         print(f"签到成功！获得: {award.get('infos', {}).get('title', '奖励')}")
 
 
-def _load_env() -> None:
-    env_file = os.path.join(os.path.dirname(str(__file__)), ".env")
+def _load_env(env_file: str | None = None) -> None:
+    if env_file is None:
+        env_file = os.path.join(os.path.dirname(str(__file__)), ".env")
     if not os.path.exists(env_file):
         return
     with open(env_file) as f:
@@ -83,7 +85,8 @@ def _load_env() -> None:
             line = line.strip()
             if line and not line.startswith("#") and "=" in line:
                 key, _, value = line.partition("=")
-                os.environ.setdefault(key.strip(), value.strip())
+                value = value.split(" #")[0].strip()
+                os.environ.setdefault(key.strip(), value)
 
 
 _load_env()
