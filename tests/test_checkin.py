@@ -72,6 +72,15 @@ def test_do_checkin_success_false_exits():
     assert exc_info.value.code == 1
 
 
+def test_do_checkin_already_checked_in(capsys):
+    mock_resp = MagicMock()
+    mock_resp.json.return_value = {"code": 1000030071, "msg": "无法参与，已达最大参与次数"}
+    with patch("checkin._session.get", return_value=mock_resp):
+        checkin.do_checkin("token", "sid")
+    captured = capsys.readouterr()
+    assert "今日已签到" in captured.out
+
+
 def test_main_missing_access_token_exits(monkeypatch):
     monkeypatch.delenv("ACCESS_TOKEN", raising=False)
     monkeypatch.setenv("SESSION_ID", "sid")

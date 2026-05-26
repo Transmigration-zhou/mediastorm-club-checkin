@@ -64,11 +64,29 @@ def do_checkin(access_token: str, sid: str) -> None:
     resp = _session.get(CHECKIN_URL, params=params, headers=build_headers(sid), timeout=30)
     resp.raise_for_status()
     body = resp.json()
+    if body.get("code") == 1000030071:
+        print("今日已签到，跳过")
+        return
     if body.get("code") != 0 or not body.get("data", {}).get("success"):
         print(f"签到失败: {body}")
         sys.exit(1)
     for award in body["data"].get("list", []):
         print(f"签到成功！获得: {award.get('infos', {}).get('title', '奖励')}")
+
+
+def _load_env() -> None:
+    env_file = os.path.join(os.path.dirname(str(__file__)), ".env")
+    if not os.path.exists(env_file):
+        return
+    with open(env_file) as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, _, value = line.partition("=")
+                os.environ.setdefault(key.strip(), value.strip())
+
+
+_load_env()
 
 
 def main() -> None:
