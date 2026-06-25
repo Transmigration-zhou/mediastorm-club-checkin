@@ -30,6 +30,14 @@
 
 Token 过期时签到失败，GitHub 会自动发邮件通知。重新抓包，更新两个 Secret 即可。
 
+凭证大约每隔几天就会过期，可用一键脚本更新（需已安装并登录 [GitHub CLI](https://cli.github.com/)，且在仓库目录下运行）：
+
+```bash
+python update_token.py
+```
+
+运行后粘贴抓包的 URL（含 `access_token`）和 `Extra-Data` 行，按 Ctrl-D 结束。脚本会自动提取凭证、更新本地 `.env` 和 GitHub Secrets，并运行一次签到验证。
+
 ## 本地运行
 
 ```bash
