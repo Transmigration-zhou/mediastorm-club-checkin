@@ -39,7 +39,7 @@ def main() -> None:
         print(f"错误：{e}")
         sys.exit(1)
     write_env(token, sid)
-    print(f"已更新 .env（ACCESS_TOKEN={token[:8]}… SESSION_ID={sid[:12]}…）")
+    print("已更新 .env")
     update_secrets(token, sid)
     print("已更新 GitHub Secrets")
     print("验证签到：")

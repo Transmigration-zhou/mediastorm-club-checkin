@@ -69,7 +69,7 @@ def do_checkin(access_token: str, sid: str) -> None:
         return
     data = body.get("data") or {}
     if body.get("code") != 0 or not data.get("success"):
-        print(f"签到失败: {body}")
+        print(f"签到失败: code={body.get('code')} msg={body.get('msg')}")
         sys.exit(1)
     awards = data.get("list", [])
     if not awards:
