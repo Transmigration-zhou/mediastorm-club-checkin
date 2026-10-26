@@ -29,7 +29,11 @@
 | `ACCESS_TOKEN` | 步骤 2 中获取的 access_token |
 | `SESSION_ID` | 步骤 2 中获取的 sid |
 
-配置完成后 Actions 自动启用，每天北京时间 09:00 执行签到。也可在 **Actions → Daily Check-in → Run workflow** 手动触发验证。
+### 4. 启用 Actions
+
+Fork 的仓库默认不运行 workflow。进入 **Actions** 标签页，点击 **I understand my workflows, go ahead and enable them**，再进入 **Daily Check-in** 确认已启用。
+
+启用后每天北京时间 09:00 执行签到。也可在 **Actions → Daily Check-in → Run workflow** 手动触发验证。
 
 ## 凭证过期
 
