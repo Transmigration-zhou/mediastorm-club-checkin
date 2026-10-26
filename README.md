@@ -45,7 +45,7 @@ Token 过期时签到失败，GitHub 会自动发邮件通知。重新抓包，�
 python update_token.py
 ```
 
-运行后粘贴抓包的 URL（含 `access_token`）和 `Extra-Data` 行即可，脚本读到这两个值后会自动结束，无需按任何结束键。随后自动提取凭证、更新本地 `.env` 和 GitHub Secrets，并运行一次签到验证。
+运行后粘贴抓包的 URL（含 `access_token`）和 `Extra-Data` 行即可，脚本读到这两个值后会自动结束，无需按任何结束键。随后先用新凭证运行一次签到验证，验证通过后才会更新 GitHub Secrets 并写入本地 `.env`；验证失败则不做任何改动。
 
 ## 本地运行
 
